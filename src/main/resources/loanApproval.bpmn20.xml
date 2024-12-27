@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:activiti="http://activiti.org/bpmn"
+             id="sid-38422fae-e03e-43a3-bef4-bd33b32041b2"
+             targetNamespace="http://bpmn.io/bpmn"
+             exporter="bpmn-js (https://demo.bpmn.io)"
+             exporterVersion="18.1.1">
+
+    <process id="loanApprovalProcess" name="Loan Approval Process" isExecutable="true">
+        <startEvent id="startEvent" name="Start Loan Process"/>
+
+        <!-- User Task: Submit Loan Request -->
+        <userTask id="submitLoanRequest" name="Submit Loan Request" activiti:assignee="applicant"/>
+
+        <!-- Service Task: Loan Review -->
+        <serviceTask id="loanReview" name="Loan Review"
+                     activiti:class="org.activiti.example.loan.LoanReviewService"/>
+
+        <!-- Exclusive Gateway: Decision Point (Approve or Reject) -->
+        <exclusiveGateway id="decisionGateway" name="Loan Approval Decision"/>
+
+        <!-- User Task: Manager Approval -->
+        <userTask id="managerApproval" name="Manager Approval" activiti:assignee="manager"/>
+
+        <!-- End Event: Approved or Rejected -->
+        <endEvent id="endEvent" name="End Loan Process"/>
+
+        <!-- Sequence Flows -->
+        <sequenceFlow id="flow1" sourceRef="startEvent" targetRef="submitLoanRequest"/>
+        <sequenceFlow id="flow2" sourceRef="submitLoanRequest" targetRef="loanReview"/>
+        <sequenceFlow id="flow3" sourceRef="loanReview" targetRef="decisionGateway"/>
+        <sequenceFlow id="flow4" sourceRef="decisionGateway" targetRef="managerApproval" name="approved"/>
+        <sequenceFlow id="flow5" sourceRef="managerApproval" targetRef="endEvent"/>
+        <sequenceFlow id="flow6" sourceRef="decisionGateway" targetRef="endEvent" name="rejected"/>
+    </process>
+</definitions>
